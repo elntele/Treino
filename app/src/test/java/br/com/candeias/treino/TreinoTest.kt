@@ -1,8 +1,6 @@
 package br.com.candeias.treino
 
 import androidx.lifecycle.ViewModelProvider
-import br.com.candeias.treino.model.Treino
-import br.com.candeias.treino.ui.treino.TreinoViewModel
 import org.junit.Assert
 import org.junit.Test
 
@@ -20,12 +18,12 @@ class TreinoTest {
         assertEquals(4, 2 + 2)
     }
 
-    @Test
+  /*  @Test
     fun getTreinosInRemoteBAnk(){
         val mViewModel = ViewModelProvider.NewInstanceFactory()
             .create(TreinoViewModel::class.java)
         mViewModel.loadTreinosFromRemoteBank()
-    }
+    }*/
 /*
     @Test
     fun getTreinosTest(){

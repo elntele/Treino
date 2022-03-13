@@ -1,12 +1,19 @@
 package br.com.candeias.treino.ui.main
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import br.com.candeias.treino.R
+import br.com.candeias.treino.model.Exercicio
+import br.com.candeias.treino.ui.treino.TreinoActivity
+
 
 class MainFragment : Fragment() {
 
@@ -27,6 +34,8 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         // TODO: Use the ViewModel
+
+
     }
 
 }

@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Treino">
         <activity
+            android:name=".ui.treino.TreinoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.treino.TreinoFragment"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
