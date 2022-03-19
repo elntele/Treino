@@ -111,7 +111,7 @@ object TreinoRepository {
         localList.addAll(treinoout)
         val set = HashSet<Treino>()
         set.addAll(treinoout)
-        r.addAll(set as MutableList<Treino>)
+        r.addAll(set.toMutableList())
 
         for (t in r) {
             for (e in exercicios) {

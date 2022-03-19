@@ -35,10 +35,11 @@ class TreinoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         reciclerTreino =  recycler_treino
         viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
-        treinoAdapter = TreinoAdapter(viewModel, this)
+        treinoAdapter = TreinoAdapter(viewModel, this,  activity)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
         reciclerTreino.setLayoutManager(layoutManager)
         reciclerTreino.setAdapter(treinoAdapter)
+
     }
 
 }

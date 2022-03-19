@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Treino</string>
+    <string name="gigNa">Digite seu nome</string>
+    <string name="gigSenCad">Digite uma senha</string>
+    <string name="gigSenLog">Digite sua senha</string>
+    <string name="gigEmaillog">Digite seu email</string>
+    <string name="gigEmailCad">Digite um email para cadastro</string>
+    <string name="botEntr">Entrar</string>
+    <string name="botLimpar">Limpar</string>
+    <string name="botCadastrar">Cadastrar</string>
+    <string name="botCadastro">Cadastro</string>
+    <string name="continuarExerc">Click para abrir os exercicios</string>
+    <string name="contnuarLendo">Click para abrir os exercicios</string>
+    <string name="verExerc">Click para ver o exercício</string>
+    <string name="tituloTrei">Treinamentos</string>
+    <string name="tituloExerc">Exercícios</string>
+    <string name="espera">Aguarde um momento, o app está carregando a lista de treinos.</string>
+    <string name="nomeTreino">Digite um número para o treino.</string>
+    <string name="descrTreino">Digite uma drecrição para o treino</string>
+    <string name="dataTreino">Selecione uma data para o treino.</string>
+    <string name="nomeExercicio">Digite um número para o exercicio.</string>
+    <string name="descExercicio">Digite uma descrição para exercicio.</string>
+    <string name="imagemExercicio">Digite uma descrição para exercicio.</string>
 </resources>

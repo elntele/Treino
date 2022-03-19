@@ -1,8 +1,10 @@
 package br.com.candeias.treino.ui.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +35,10 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
-
+        Handler().postDelayed({
+            activity?.fragmentManager?.popBackStack()
+            //getActivity()?.getFragmentManager()?.popBackStack();
+        }, 3000)
 
     }
 
