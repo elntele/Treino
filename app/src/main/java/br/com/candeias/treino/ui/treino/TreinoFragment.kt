@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.candeias.treino.R
+import br.com.candeias.treino.repository.TreinoRepository
+import br.com.candeias.treino.viewmodel.TreinoViewModelFactory
 import kotlinx.android.synthetic.main.treino_fragment.*
 
 
@@ -34,7 +36,13 @@ class TreinoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         reciclerTreino =  recycler_treino
-        viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
+       // viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
+        // essa implementação junto com o TreinoViewModelFctory, permite que o TreinoViewModel
+        // receba um TreinoRepository() como injeção de dependência
+        val factory = TreinoViewModelFactory(TreinoRepository)
+        val viewModel = ViewModelProvider(this, factory).get(TreinoViewModel::class.java)
+
+
         treinoAdapter = TreinoAdapter(viewModel, this,  activity)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
         reciclerTreino.setLayoutManager(layoutManager)

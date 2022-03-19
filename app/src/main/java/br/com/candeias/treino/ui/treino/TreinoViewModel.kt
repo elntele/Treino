@@ -4,16 +4,16 @@ import androidx.lifecycle.ViewModel
 import br.com.candeias.treino.model.Treino
 import br.com.candeias.treino.repository.TreinoRepository
 
-class TreinoViewModel : ViewModel() {
+class TreinoViewModel (val treinoRepository: TreinoRepository): ViewModel() {
 
 
     fun getTreinos(): MutableList<Treino>? {
-        var treino=  TreinoRepository?.getTreinoout()
+        var treino=  treinoRepository?.getTreinoout()
         return treino
     }
 
     fun loadTreinosFromRemoteBank(){
 
-        TreinoRepository?.getInstancesFromApiFireBase()
+        treinoRepository?.getInstancesFromApiFireBase()
     }
 }
