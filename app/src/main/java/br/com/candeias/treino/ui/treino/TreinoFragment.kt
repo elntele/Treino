@@ -8,9 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.candeias.treino.R
+import br.com.candeias.treino.repository.TreinoRepository
 import kotlinx.android.synthetic.main.treino_fragment.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KProperty
+
 
 
 class TreinoFragment : Fragment() {
@@ -20,7 +23,9 @@ class TreinoFragment : Fragment() {
     }
 
     private lateinit var reciclerTreino: RecyclerView
-    private  var viewModel: TreinoViewModel by viewModel()
+    private  var viewModel: TreinoViewModel by viewModel{
+        parametersOf(TreinoRepository)
+    }
 
 
     private lateinit var treinoAdapter: TreinoAdapter
