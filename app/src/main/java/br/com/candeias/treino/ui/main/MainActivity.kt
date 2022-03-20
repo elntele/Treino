@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import br.com.candeias.treino.R
 import br.com.candeias.treino.repository.TreinoRepository
 import br.com.candeias.treino.ui.treino.TreinoActivity
+import br.com.candeias.treino.ui.treino.TreinoViewModel
 import br.com.candeias.treino.ui.wait.WaitActivity
+import org.koin.android.viewmodel.compat.ViewModelCompat
+import org.koin.android.viewmodel.dsl.viewModel
 
 class MainActivity : AppCompatActivity() {
     private  var savedInstanceState: Bundle?=null

@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.candeias.treino.R
 import kotlinx.android.synthetic.main.treino_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
+import kotlin.reflect.KProperty
 
 
 class TreinoFragment : Fragment() {
@@ -19,7 +20,8 @@ class TreinoFragment : Fragment() {
     }
 
     private lateinit var reciclerTreino: RecyclerView
-    private lateinit var viewModel: TreinoViewModel
+    private  var viewModel: TreinoViewModel by viewModel()
+
 
     private lateinit var treinoAdapter: TreinoAdapter
 
@@ -34,7 +36,7 @@ class TreinoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         reciclerTreino =  recycler_treino
-        viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
+        //viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
         treinoAdapter = TreinoAdapter(viewModel, this,  activity)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
         reciclerTreino.setLayoutManager(layoutManager)
@@ -43,3 +45,8 @@ class TreinoFragment : Fragment() {
     }
 
 }
+
+private operator fun Any.setValue(treinoFragment: TreinoFragment, property: KProperty<*>, treinoViewModel: TreinoViewModel) {
+
+}
+
