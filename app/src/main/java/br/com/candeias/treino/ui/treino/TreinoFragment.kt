@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.candeias.treino.R
 import br.com.candeias.treino.repository.TreinoRepository
 import kotlinx.android.synthetic.main.treino_fragment.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.Observer
 import kotlin.reflect.KProperty
 
 
@@ -26,9 +24,10 @@ class TreinoFragment : Fragment() {
     }
 
     private lateinit var reciclerTreino: RecyclerView
-    private  var viewModel: TreinoViewModel by viewModel{
+    val viewModel: TreinoViewModel by viewModel()
+    /*private  var viewModel: TreinoViewModel by viewModel{
         parametersOf(TreinoRepository)
-    }
+    }*/
 
 
     private lateinit var treinoAdapter: TreinoAdapter
@@ -72,7 +71,7 @@ class TreinoFragment : Fragment() {
 
 }
 
-private operator fun Any.setValue(treinoFragment: TreinoFragment, property: KProperty<*>, treinoViewModel: TreinoViewModel) {
+/*private operator fun Any.setValue(treinoFragment: TreinoFragment, property: KProperty<*>, treinoViewModel: TreinoViewModel) {
 
-}
+}*/
 
