@@ -12,7 +12,6 @@ import br.com.candeias.treino.R
 import br.com.candeias.treino.model.Treino
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.treino_card_view.view.*
-import util.singleton.FireBaseStarangeApi.Companion.getStorangeRefe
 
 
 class TreinoAdapter(
@@ -38,10 +37,10 @@ class TreinoAdapter(
         holder.title.setText(treinos[position].descricao.toString())
         // isso tem que ir para a classe de api
         // isso tem que ir para a classe de api
-        val storage = getStorangeRefe()
+       /* val storage = getStorangeRefe()
         val storageRef = storage!!.reference
         val folder = storageRef.child(treinos[position].id + "/")
-        val file = folder.child(treinos[position].exercicios[1].id + ".png")
+        val file = folder.child(treinos[position].exercicios[1].id + ".png")*/
 
         try {
             Picasso.get().load(treinos[position].exercicios[1].imagem.toString())

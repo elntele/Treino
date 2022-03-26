@@ -5,5 +5,4 @@ import com.google.firebase.ktx.Firebase
 
 object FireStoreApi {
     val firebaseFirestore = Firebase.firestore
-    //var firebaseFirestore: FirebaseFirestore? = FirebaseFirestore.getInstance()
 }

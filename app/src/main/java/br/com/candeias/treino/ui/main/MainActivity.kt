@@ -6,13 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import br.com.candeias.treino.R
 import br.com.candeias.treino.repository.TreinoRepository
 import br.com.candeias.treino.ui.treino.TreinoActivity
-import br.com.candeias.treino.ui.treino.TreinoViewModel
 import br.com.candeias.treino.ui.wait.WaitActivity
-import org.koin.android.viewmodel.compat.ViewModelCompat
-import org.koin.android.viewmodel.dsl.viewModel
+import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private  var savedInstanceState: Bundle?=null
+    private var data: DocumentSnapshot?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
@@ -20,7 +22,12 @@ class MainActivity : AppCompatActivity() {
         }
         setContentView(R.layout.main_activity)
         // teste em treino repositori
+        GlobalScope.launch {
+             TreinoRepository.getdata()
+        }
+
         TreinoRepository.getInstancesFromApiFireBase()
+
 
 
     }
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun routing(){
         var size= TreinoRepository.getTreinoout().size
+        this.data
         if (size==0){
             val intent1 = Intent(
                 this,

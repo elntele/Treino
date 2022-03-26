@@ -3,18 +3,22 @@ package br.com.candeias.treino.repository
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import br.com.candeias.treino.model.Exercicio
 import br.com.candeias.treino.model.Treino
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.tasks.await
 import util.singleton.FireBaseStarangeApi
+import util.singleton.FireStoreApi.firebaseFirestore
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -22,26 +26,150 @@ import java.net.URL
 object TreinoRepository {
 
     private val exercicios: MutableList<Exercicio> = ArrayList()
+    private val exercicios1: MutableList<Exercicio> = ArrayList()
     private val treinos = mutableListOf<Treino>()
-    private val treinoout: MutableList<Treino> = ArrayList()
+    private val treinoOut: MutableList<Treino> = ArrayList()
+    private val _onTreinoLiveData = MutableLiveData<List<Treino>>()
     private val treino = "TREINO"
     private val exercicio = "EXERCICIO"
     private val idMap: HashMap<String, String> = HashMap()
-
+    private var data: DocumentSnapshot? = null
 
     private var f: TreinoRepository? = null
 
-    private fun TreinoRepository() {
-    }
 
-   /* @Synchronized
-    fun getIntance(): TreinoRepository? {
-        if (f == null) {
-            f = this
+    //return a list of DocumentSnapshot
+    /*suspend fun getExerciciosFromFireStore()
+            : List<DocumentSnapshot>?{
+        return try{
+
+            var data=firebaseFirestore?.collection(exercicio).get().await()
+            val documentList: MutableList<DocumentSnapshot> = ArrayList()
+            data.let { result ->
+                for (docoment in result){
+                    documentList.add(docoment)
+                }
+            }
+            documentList
+        }catch (e : Exception){
+            null
         }
-        return f
     }*/
 
+
+    //returns a DocumentSnapshot
+    /*  suspend fun olhardata():DocumentSnapshot?{
+           return try{
+               val data=firebaseFirestore?.collection(exercicio).document().get().await()
+              data
+          }catch (e : Exception){
+              null
+          }
+      }*/
+
+    suspend fun getdata(): List<Treino>? {
+        return try {
+            var exerciciosL = getExerciciosFromFireStore()
+            var treinosl = getTreinosFromFireStore(exerciciosL)
+            var retorno = associatTreineExercicio(treinosl as MutableList<Treino>, exerciciosL as MutableList<Exercicio>)
+            retorno
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
+
+    suspend fun getExerciciosFromFireStore()
+            : List<Exercicio>? {
+        return try {
+            var data = firebaseFirestore?.collection(exercicio).get().await()
+            //   val documentList: MutableList<DocumentSnapshot> = ArrayList()
+            val exerciciosLocal: MutableList<Exercicio> = ArrayList()
+            val exeList: MutableList<Exercicio> = ArrayList()
+            data.let { result ->
+                for (document in result) {
+                    val e: Exercicio = fillExercicioInstance(document)
+                    //  exeList.add(e)
+                    if (!exerciciosLocal.contains(e)) {
+                        exerciciosLocal.add(e)
+                    }
+
+                    // documentList.add(document)
+                }
+            }
+            exerciciosLocal
+            //getTreinosFromFireStore(exeList)
+
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+
+    suspend fun getTreinosFromFireStore(execList: List<Exercicio>?): List<Treino> {
+        val fireStoredb = Firebase.firestore
+        val treinos: MutableList<Treino> = ArrayList()
+        if (execList != null) {
+            for (exec in execList) {
+                val d: DocumentReference? = fireStoredb?.document(exercicio + "/" + exec.id)
+                d?.let { fireStoredb?.collection(treino)?.whereArrayContains("exercicios", it) }
+                    ?.get()
+                    ?.await().let { result ->
+                        if (result != null) {
+                            for (document in result) {
+                                val t = fillTreinoInstance(document)
+                                if (!treinos.contains(t)) {
+                                    treinos.add(t)
+                                }
+                                getImagesLikeUrl(t.id, exec)
+                            }
+                        }
+                    }
+            }
+        }
+        return treinos
+    }
+
+
+    fun associatTreineExercicio(
+        treinos: MutableList<Treino>,
+        exercicios: MutableList<Exercicio>
+    ): MutableList<Treino> {
+
+        for (t in treinos) {
+            for (e in exercicios) {
+                for (d in t.strinExe) {
+                    val ls: String = d.getPath()
+                    val l = ls.split("/").toTypedArray()
+                    val idDtr = l[1]
+                    if (e.id.equals(idDtr)) {
+                        if (!t?.exercicios.contains(e)) {
+                            t.exercicios.add(e)
+                        }
+                    }
+                }
+            }
+        }
+        return treinos
+    }
+
+
+    suspend fun getImagesLikeUrl(idTreino: String, e: Exercicio) {
+        val storage: FirebaseStorage? = FireBaseStarangeApi.storage
+        val storageRef: StorageReference = storage!!.reference
+        val folder: StorageReference = storageRef.child("$idTreino/")
+        val file: StorageReference = folder.child(e.id + ".png")
+        file.downloadUrl.await().let { uri ->
+            try {
+                val url = URL(uri.toString())
+                e.imagem = url
+            } catch (malformedURLException: MalformedURLException) {
+                malformedURLException.printStackTrace()
+            }
+        }
+
+    }
 
     fun getInstancesFromApiFireBase() {
         //val fireStoredb: FirebaseFirestore? = FireStoreApi.firebaseFirestore
@@ -64,6 +192,7 @@ object TreinoRepository {
 
     }
 
+
     private fun getIsntancesOfTreinoFronApiFireBase(exec: Exercicio) {
         //val fireStoredb: FirebaseFirestore? = FireStoreApi.firebaseFirestore
         val fireStoredb = Firebase.firestore
@@ -72,8 +201,8 @@ object TreinoRepository {
             ?.get()?.addOnSuccessListener { result ->
                 for (document in result) {
                     val t = fillTreinoInstance(document)
-                    if (!treinoout.contains(t)) {
-                        treinoout.add(t)
+                    if (!treinoOut.contains(t)) {
+                        treinoOut.add(t)
                     }
                     getUrlImages(t.id, exec)
                 }
@@ -108,9 +237,9 @@ object TreinoRepository {
     fun getTreinoout(): MutableList<Treino> {
         val localList: MutableList<Treino> = ArrayList()
         val r: MutableList<Treino> = ArrayList()
-        localList.addAll(treinoout)
+        localList.addAll(treinoOut)
         val set = HashSet<Treino>()
-        set.addAll(treinoout)
+        set.addAll(treinoOut)
         r.addAll(set.toMutableList())
 
         for (t in r) {
@@ -132,7 +261,7 @@ object TreinoRepository {
 
 
     private fun getUrlImages(idTreino: String, e: Exercicio) {
-        val storage: FirebaseStorage? = FireBaseStarangeApi.Companion.getStorangeRefe()
+        val storage: FirebaseStorage? = FireBaseStarangeApi.storage
         val storageRef: StorageReference = storage!!.getReference()
         val folder: StorageReference = storageRef.child("$idTreino/")
         val file: StorageReference = folder.child(e.id.toString().toString() + ".png")
@@ -152,52 +281,52 @@ object TreinoRepository {
     }
 
 
-   /* fun putTreino(t: Treino, key: String) {
-        val fireStoredb: FirebaseFirestore? = FireStoreApi.Companion.getFirebaseFirestore()
-        // Create a new user with a first and last name
-        val treino: MutableMap<String, Any> = HashMap()
-        treino["nome"] = t.nome!!
-        treino["descricao"] = t.descricao!!
-        treino["data"] = t.data!!
-        val l: MutableList<String> = ArrayList()
-        for (e in t.exercicios) {
-            l.add(this.treino + "/" + e.id)
-        }
-        treino["exercicios"] = l
-        fireStoredb?.collection(this.treino)?
-            .add(treino)
-            .addOnSuccessListener(OnSuccessListener<Any> { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference)
-                idMap[key] = documentReference.getId().toString()
-                return@OnSuccessListener
-            })
-            .addOnFailureListener(OnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-                return@OnFailureListener
-            })
-    }
+    /* fun putTreino(t: Treino, key: String) {
+         val fireStoredb: FirebaseFirestore? = FireStoreApi.Companion.getFirebaseFirestore()
+         // Create a new user with a first and last name
+         val treino: MutableMap<String, Any> = HashMap()
+         treino["nome"] = t.nome!!
+         treino["descricao"] = t.descricao!!
+         treino["data"] = t.data!!
+         val l: MutableList<String> = ArrayList()
+         for (e in t.exercicios) {
+             l.add(this.treino + "/" + e.id)
+         }
+         treino["exercicios"] = l
+         fireStoredb?.collection(this.treino)?
+             .add(treino)
+             .addOnSuccessListener(OnSuccessListener<Any> { documentReference ->
+                 Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference)
+                 idMap[key] = documentReference.getId().toString()
+                 return@OnSuccessListener
+             })
+             .addOnFailureListener(OnFailureListener { e ->
+                 Log.w(TAG, "Error adding document", e)
+                 return@OnFailureListener
+             })
+     }
 
-    fun putTreinputTreinoCompleto(t: Treino?) {
-        val fireStoredb: FirebaseFirestore = FireStoreApi.Companion.getFirebaseFirestore()
-        fireStoredb.collection(treino)
-            .add(t)
-            .addOnSuccessListener(OnSuccessListener<Any> { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId())
-                return@OnSuccessListener
-            })
-            .addOnFailureListener(OnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-                return@OnFailureListener
-            })
-    }
+     fun putTreinputTreinoCompleto(t: Treino?) {
+         val fireStoredb: FirebaseFirestore = FireStoreApi.Companion.getFirebaseFirestore()
+         fireStoredb.collection(treino)
+             .add(t)
+             .addOnSuccessListener(OnSuccessListener<Any> { documentReference ->
+                 Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId())
+                 return@OnSuccessListener
+             })
+             .addOnFailureListener(OnFailureListener { e ->
+                 Log.w(TAG, "Error adding document", e)
+                 return@OnFailureListener
+             })
+     }
 
-    fun updateTreino(id: String) {
-        val fireStoredb: FirebaseFirestore = FireStoreApi.Companion.getFirebaseFirestore()
-        // Create a new user with a first and last name
-        val treino: MutableMap<String, Any> = HashMap()
-        val l: MutableList<String> = ArrayList()
-        l.add(exercicio + "/" + id)
-        *//*    l.add(this.treino + "/" + "teste");
+     fun updateTreino(id: String) {
+         val fireStoredb: FirebaseFirestore = FireStoreApi.Companion.getFirebaseFirestore()
+         // Create a new user with a first and last name
+         val treino: MutableMap<String, Any> = HashMap()
+         val l: MutableList<String> = ArrayList()
+         l.add(exercicio + "/" + id)
+         *//*    l.add(this.treino + "/" + "teste");
         l.add(this.treino + "/" + "teste");
         l.add(this.treino + "/" + "teste");*//*treino["exercicios"] = l
         fireStoredb.collection(this.treino).document("OvQMQiHyfAiYS71RAIBM")
@@ -225,3 +354,7 @@ object TreinoRepository {
 
 
 }
+
+
+
+
