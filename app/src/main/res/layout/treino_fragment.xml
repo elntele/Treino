@@ -8,7 +8,7 @@
     tools:context=".ui.treino.TreinoFragment">
 
     <ProgressBar
-        android:id="@+id/card_visibility"
+        android:id="@+id/progress_bar_treino_fragment"
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_treino"

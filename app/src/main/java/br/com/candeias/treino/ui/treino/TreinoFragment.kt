@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,7 +48,7 @@ class TreinoFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        progress_bar_treino_fragment.isVisible=true
         setupObservers()
     }
 
@@ -54,6 +56,7 @@ class TreinoFragment : Fragment() {
         activity?.let {
             viewModel.onLiveData.observe(it, androidx.lifecycle.Observer {
                 reciclerTreino =  recycler_treino
+                progress_bar_treino_fragment.isVisible=false
                 //viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
                 treinoAdapter = TreinoAdapter(viewModel, this,  activity)
                 val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
