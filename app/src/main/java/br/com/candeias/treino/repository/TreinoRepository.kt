@@ -25,47 +25,8 @@ import java.net.URL
 
 object TreinoRepository {
 
-    private val exercicios: MutableList<Exercicio> = ArrayList()
-    private val exercicios1: MutableList<Exercicio> = ArrayList()
-    private val treinos = mutableListOf<Treino>()
-    private val treinoOut: MutableList<Treino> = ArrayList()
-    private val _onTreinoLiveData = MutableLiveData<List<Treino>>()
     private val treino = "TREINO"
     private val exercicio = "EXERCICIO"
-    private val idMap: HashMap<String, String> = HashMap()
-    private var data: DocumentSnapshot? = null
-
-    private var f: TreinoRepository? = null
-
-
-    //return a list of DocumentSnapshot
-    /*suspend fun getExerciciosFromFireStore()
-            : List<DocumentSnapshot>?{
-        return try{
-
-            var data=firebaseFirestore?.collection(exercicio).get().await()
-            val documentList: MutableList<DocumentSnapshot> = ArrayList()
-            data.let { result ->
-                for (docoment in result){
-                    documentList.add(docoment)
-                }
-            }
-            documentList
-        }catch (e : Exception){
-            null
-        }
-    }*/
-
-
-    //returns a DocumentSnapshot
-    /*  suspend fun olhardata():DocumentSnapshot?{
-           return try{
-               val data=firebaseFirestore?.collection(exercicio).document().get().await()
-              data
-          }catch (e : Exception){
-              null
-          }
-      }*/
 
     suspend fun getdata(): List<Treino>? {
         return try {
@@ -76,7 +37,6 @@ object TreinoRepository {
         } catch (e: Exception) {
             null
         }
-
     }
 
 
@@ -84,23 +44,17 @@ object TreinoRepository {
             : List<Exercicio>? {
         return try {
             var data = firebaseFirestore?.collection(exercicio).get().await()
-            //   val documentList: MutableList<DocumentSnapshot> = ArrayList()
             val exerciciosLocal: MutableList<Exercicio> = ArrayList()
             val exeList: MutableList<Exercicio> = ArrayList()
             data.let { result ->
                 for (document in result) {
                     val e: Exercicio = fillExercicioInstance(document)
-                    //  exeList.add(e)
                     if (!exerciciosLocal.contains(e)) {
                         exerciciosLocal.add(e)
                     }
-
-                    // documentList.add(document)
                 }
             }
             exerciciosLocal
-            //getTreinosFromFireStore(exeList)
-
         } catch (e: Exception) {
             null
         }
@@ -171,46 +125,9 @@ object TreinoRepository {
 
     }
 
-    fun getInstancesFromApiFireBase() {
-        //val fireStoredb: FirebaseFirestore? = FireStoreApi.firebaseFirestore
-        val fireStoredb = Firebase.firestore
-        fireStoredb?.collection(exercicio)
-            ?.get()?.addOnSuccessListener { result ->
-                val exeList: MutableList<Exercicio> = ArrayList()
-                for (document in result) {
-                    val e: Exercicio = fillExercicioInstance(document)
-                    exeList.add(e)
-                    if (!exercicios.contains(e)) {
-                        exercicios.add(e)
-                    }
-                    getIsntancesOfTreinoFronApiFireBase(e)
-                }
-            }
-            ?.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-    }
 
 
-    private fun getIsntancesOfTreinoFronApiFireBase(exec: Exercicio) {
-        //val fireStoredb: FirebaseFirestore? = FireStoreApi.firebaseFirestore
-        val fireStoredb = Firebase.firestore
-        val d: DocumentReference? = fireStoredb?.document(exercicio + "/" + exec.id)
-        d?.let { fireStoredb?.collection(treino)?.whereArrayContains("exercicios", it) }
-            ?.get()?.addOnSuccessListener { result ->
-                for (document in result) {
-                    val t = fillTreinoInstance(document)
-                    if (!treinoOut.contains(t)) {
-                        treinoOut.add(t)
-                    }
-                    getUrlImages(t.id, exec)
-                }
-            }
-            ?.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-    }
+
 
 
     private fun fillExercicioInstance(d: QueryDocumentSnapshot): Exercicio {
@@ -234,7 +151,11 @@ object TreinoRepository {
     }
 
 
-    fun getTreinoout(): MutableList<Treino> {
+
+
+
+
+    /*fun getTreinoout(): MutableList<Treino> {
         val localList: MutableList<Treino> = ArrayList()
         val r: MutableList<Treino> = ArrayList()
         localList.addAll(treinoOut)
@@ -257,29 +178,102 @@ object TreinoRepository {
             }
         }
         return r
-    }
+    }*/
 
 
-    private fun getUrlImages(idTreino: String, e: Exercicio) {
-        val storage: FirebaseStorage? = FireBaseStarangeApi.storage
-        val storageRef: StorageReference = storage!!.getReference()
-        val folder: StorageReference = storageRef.child("$idTreino/")
-        val file: StorageReference = folder.child(e.id.toString().toString() + ".png")
-        file.getDownloadUrl().addOnSuccessListener(OnSuccessListener<Any> { uri ->
-            try {
-                val url = URL(uri.toString())
-                e.imagem = url
-            } catch (malformedURLException: MalformedURLException) {
-                malformedURLException.printStackTrace()
+
+    /* fun getInstancesFromApiFireBase() {
+        //val fireStoredb: FirebaseFirestore? = FireStoreApi.firebaseFirestore
+        val fireStoredb = Firebase.firestore
+        fireStoredb?.collection(exercicio)
+            ?.get()?.addOnSuccessListener { result ->
+                val exeList: MutableList<Exercicio> = ArrayList()
+                for (document in result) {
+                    val e: Exercicio = fillExercicioInstance(document)
+                    exeList.add(e)
+                    if (!exercicios.contains(e)) {
+                        exercicios.add(e)
+                    }
+                    getIsntancesOfTreinoFronApiFireBase(e)
+                }
             }
-        }).addOnFailureListener(OnFailureListener { exception ->
-            Log.d(
-                "Falha",
-                "in method getUrlImages $exception"
-            )
-        })
-    }
+            ?.addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
 
+    }*/
+
+/*
+    private fun getIsntancesOfTreinoFronApiFireBase(exec: Exercicio) {
+        //val fireStoredb: FirebaseFirestore? = FireStoreApi.firebaseFirestore
+        val fireStoredb = Firebase.firestore
+        val d: DocumentReference? = fireStoredb?.document(exercicio + "/" + exec.id)
+        d?.let { fireStoredb?.collection(treino)?.whereArrayContains("exercicios", it) }
+            ?.get()?.addOnSuccessListener { result ->
+                for (document in result) {
+                    val t = fillTreinoInstance(document)
+                    if (!treinoOut.contains(t)) {
+                        treinoOut.add(t)
+                    }
+                    getUrlImages(t.id, exec)
+                }
+            }
+            ?.addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }*/
+
+
+    /* private fun getUrlImages(idTreino: String, e: Exercicio) {
+         val storage: FirebaseStorage? = FireBaseStarangeApi.storage
+         val storageRef: StorageReference = storage!!.getReference()
+         val folder: StorageReference = storageRef.child("$idTreino/")
+         val file: StorageReference = folder.child(e.id.toString().toString() + ".png")
+         file.getDownloadUrl().addOnSuccessListener(OnSuccessListener<Any> { uri ->
+             try {
+                 val url = URL(uri.toString())
+                 e.imagem = url
+             } catch (malformedURLException: MalformedURLException) {
+                 malformedURLException.printStackTrace()
+             }
+         }).addOnFailureListener(OnFailureListener { exception ->
+             Log.d(
+                 "Falha",
+                 "in method getUrlImages $exception"
+             )
+         })
+     }
+ */
+
+
+    //return a list of DocumentSnapshot
+    /*suspend fun getExerciciosFromFireStore()
+            : List<DocumentSnapshot>?{
+        return try{
+
+            var data=firebaseFirestore?.collection(exercicio).get().await()
+            val documentList: MutableList<DocumentSnapshot> = ArrayList()
+            data.let { result ->
+                for (docoment in result){
+                    documentList.add(docoment)
+                }
+            }
+            documentList
+        }catch (e : Exception){
+            null
+        }
+    }*/
+
+
+    //returns a DocumentSnapshot
+    /*  suspend fun olhardata():DocumentSnapshot?{
+           return try{
+               val data=firebaseFirestore?.collection(exercicio).document().get().await()
+              data
+          }catch (e : Exception){
+              null
+          }
+      }*/
 
     /* fun putTreino(t: Treino, key: String) {
          val fireStoredb: FirebaseFirestore? = FireStoreApi.Companion.getFirebaseFirestore()

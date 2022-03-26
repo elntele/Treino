@@ -4,32 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import br.com.candeias.treino.R
-import br.com.candeias.treino.repository.TreinoRepository
 import br.com.candeias.treino.ui.treino.TreinoActivity
-import br.com.candeias.treino.ui.wait.WaitActivity
 import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private  var savedInstanceState: Bundle?=null
-    private var data: DocumentSnapshot?=null
+    private var savedInstanceState: Bundle? = null
+    private var data: DocumentSnapshot? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            this.savedInstanceState=savedInstanceState
+            this.savedInstanceState = savedInstanceState
         }
         setContentView(R.layout.main_activity)
-        // teste em treino repositori
-        GlobalScope.launch {
-             TreinoRepository.getdata()
-        }
-
-        TreinoRepository.getInstancesFromApiFireBase()
-
-
-
     }
 
     override fun onStart() {
@@ -37,27 +24,13 @@ class MainActivity : AppCompatActivity() {
         routing()
     }
 
-    private fun routing(){
-        var size= TreinoRepository.getTreinoout().size
-        this.data
-        if (size==0){
-            val intent1 = Intent(
-                this,
-                WaitActivity::class.java
-            )
-            startActivity(intent1)
-
-            }else{
-                val intent = Intent(
-                    this,
-                    TreinoActivity::class.java
-                )
-                startActivity(intent)
-            }
-
-        }
-
-
-
+    private fun routing() {
+        val intent = Intent(
+            this,
+            TreinoActivity::class.java
+        )
+        startActivity(intent)
+    }
 
 }
+

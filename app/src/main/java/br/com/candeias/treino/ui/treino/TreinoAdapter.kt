@@ -22,7 +22,7 @@ class TreinoAdapter(
     private lateinit var treinos: MutableList<Treino>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreinoAdapterViewHolder {
-       treinos= treinoViewModel.getTreinos()!!
+       treinos= treinoViewModel.onLiveData.value as MutableList<Treino>
 
         val ItemLista: View = LayoutInflater.from(parent.getContext()).inflate(
             R.layout.treino_card_view, parent, false
@@ -35,12 +35,6 @@ class TreinoAdapter(
         val mess: String? = context?.getString(R.string.continuarExerc)
         holder.title.setText(mess)
         holder.title.setText(treinos[position].descricao.toString())
-        // isso tem que ir para a classe de api
-        // isso tem que ir para a classe de api
-       /* val storage = getStorangeRefe()
-        val storageRef = storage!!.reference
-        val folder = storageRef.child(treinos[position].id + "/")
-        val file = folder.child(treinos[position].exercicios[1].id + ".png")*/
 
         try {
             Picasso.get().load(treinos[position].exercicios[1].imagem.toString())
@@ -53,10 +47,7 @@ class TreinoAdapter(
 
     override fun getItemCount(): Int {
         var size=0
-        if (treinoViewModel.getTreinos()?.size!=null){
-            size = treinoViewModel.getTreinos()?.size!!
-        }
-        return size
+        return (treinoViewModel.onLiveData.value as List<Treino>).size
     }
 
     class TreinoAdapterViewHolder(itemView: View) :

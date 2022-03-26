@@ -12,6 +12,7 @@ import br.com.candeias.treino.repository.TreinoRepository
 import kotlinx.android.synthetic.main.treino_fragment.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import java.util.Observer
 import kotlin.reflect.KProperty
 
 
@@ -35,19 +36,36 @@ class TreinoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         var view:View =inflater.inflate(R.layout.treino_fragment, container, false)
+        viewModel.requestDataDownloadFromBack()
         return view
     }
 
+
+
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        reciclerTreino =  recycler_treino
-        //viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
-        treinoAdapter = TreinoAdapter(viewModel, this,  activity)
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
-        reciclerTreino.setLayoutManager(layoutManager)
-        reciclerTreino.setAdapter(treinoAdapter)
 
+        setupObservers()
     }
+
+    private fun setupObservers() {
+        activity?.let {
+            viewModel.onLiveData.observe(it, androidx.lifecycle.Observer {
+                reciclerTreino =  recycler_treino
+                //viewModel = ViewModelProvider(this).get(TreinoViewModel::class.java)
+                treinoAdapter = TreinoAdapter(viewModel, this,  activity)
+                val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
+                reciclerTreino.setLayoutManager(layoutManager)
+                reciclerTreino.setAdapter(treinoAdapter)
+
+
+            })
+        }
+    }
+
+
 
 }
 

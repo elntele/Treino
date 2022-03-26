@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.treino.TreinoFragment">
 
+    <ProgressBar
+        android:id="@+id/card_visibility"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_treino"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_treino"
+        app:layout_constraintStart_toStartOf="@+id/recycler_treino"
+        app:layout_constraintTop_toTopOf="parent"
+        app:materialIconColor="@color/black"
+        android:visibility="gone"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_treino"
         android:layout_width="409dp"
