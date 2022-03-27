@@ -5,11 +5,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import br.com.candeias.treino.R
 import br.com.candeias.treino.ui.treino.TreinoActivity
-import com.google.firebase.firestore.DocumentSnapshot
 
 class MainActivity : AppCompatActivity() {
     private var savedInstanceState: Bundle? = null
-    private var data: DocumentSnapshot? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
